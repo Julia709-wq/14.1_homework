@@ -11,23 +11,17 @@ class Product():
         self.quantity = quantity
 
     @property
-    def display_price(self):
+    def price(self):
         return self.__price
 
-    @display_price.setter
-    def display_price(self, new_price):
+    @price.setter
+    def price(self, new_price):
         if new_price <= 0:
-            return 'Цена не должна быть нулевая или отрицательная'
+            print('Цена не должна быть нулевая или отрицательная')
+            return
         else:
-            if new_price < self.__price:
-                answer = input()
-                print('Вы хотите понизить цену?', answer)
-                if answer == 'y':
-                    self.__price = new_price
-                elif answer == 'n':
-                    pass
-                else:
-                    print('Пожалуйста введите y или n')
+            self.__price = new_price
+
 
 
     @staticmethod
@@ -39,8 +33,8 @@ class Product():
         return existing_products
 
     @classmethod
-    def new_product(cls, new_name, new_description, new_price, new_quantity):
-        return cls(new_name, new_description, new_price, new_quantity)
+    def new_product(cls, new_product):
+        return cls(new_product['name'], new_product['description'], new_product['price'], new_product['quantity'])
 
 
 class Category():
@@ -57,16 +51,22 @@ class Category():
         Category.count_categories += 1
         Category.count_products += len(products)
 
-    def add_product(self, new_product):
+
+    @property
+    def products(self):
+        all_products = ''
+        for product in self.__products:
+            all_products += f'{product.name}, {product.price} руб. Остаток: {product.quantity} шт.\n'
+        return all_products
+
+    @products.setter
+    def products(self, new_product):
         self.__products.append(new_product)
         self.count_products += 1
 
     @property
-    def display_products(self):
-        all_products = []
-        for product in self.__products:
-            all_products.append(f'{product.name}, {product.price} руб. Остаток: {product.quantity} шт.')
-        return all_products
+    def products_in_list(self):
+        return self.__products
 
 
 
@@ -85,3 +85,6 @@ category1 = Category(
         [product1, product2, product3]
     )
 
+product4 = Product.new_product({'name': 'Xiaomi Vacuum', 'description': 'робот-пылесос', 'price': 18000, 'quantity': 30})
+
+print(category1.products)

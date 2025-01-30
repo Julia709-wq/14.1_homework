@@ -37,3 +37,9 @@ def second_category(scope='function'):
         'Корм для животных', 'Для кошек', [
             Product('Whiskas', 'Сухой корм', 56.99, 415)]
     )
+
+@pytest.fixture
+def new_product(scope='function'):
+    return Product(
+        'BigBon', 'Продукт быстрого приготовления', 49.99, 398
+    )

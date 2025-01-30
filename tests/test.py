@@ -1,4 +1,5 @@
-from src.classes import Category
+from src.classes import Category, Product
+from tests.conftest import first_product, first_category
 
 
 def test_products_init(first_product, second_product):
@@ -27,3 +28,31 @@ def test_count_categories(first_category, second_category):
 
 def test_count_products(first_category, second_category):
     assert Category.count_products == 3
+
+# тест класс-метода new_product
+def test_new_product_created():
+    product = Product('Xiaomi Vacuum', 'робот-пылесос', 18000, 30)
+    assert product.name == 'Xiaomi Vacuum'
+    assert product.description == 'робот-пылесос'
+    assert product.price == 18000
+    assert product.quantity == 30
+
+# тест сеттера новой цены
+def test_price_setter(capsys, first_product):
+    first_product.price = -100
+    message = capsys.readouterr()
+    assert message.out.strip() == 'Цена не должна быть нулевая или отрицательная'
+
+    first_product.price = 100
+    assert first_product.price == 100
+
+# тест для геттера списка продуктов
+def test_products_list_property(first_category):
+    assert first_category.products == ('Fanta, 89.99 руб. Остаток: 350 шт.\n'
+                                        'Saint Spring, 39.99 руб. Остаток: 237 шт.\n')
+
+# тест для проверки добавления нового продукта в список
+def test_products_list_setter(first_category, new_product):
+    assert len(first_category.products_in_list) == 2
+    first_category.products = new_product
+    assert len(first_category.products_in_list) == 3

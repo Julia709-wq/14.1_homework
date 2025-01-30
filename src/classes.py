@@ -7,8 +7,40 @@ class Product():
     def __init__(self, name, description, price, quantity):
         self.name = name
         self.description = description
-        self.price = price
+        self.__price = price
         self.quantity = quantity
+
+    @property
+    def display_price(self):
+        return self.__price
+
+    @display_price.setter
+    def display_price(self, new_price):
+        if new_price <= 0:
+            return 'Цена не должна быть нулевая или отрицательная'
+        else:
+            if new_price < self.__price:
+                answer = input()
+                print('Вы хотите понизить цену?', answer)
+                if answer == 'y':
+                    self.__price = new_price
+                elif answer == 'n':
+                    pass
+                else:
+                    print('Пожалуйста введите y или n')
+
+
+    @staticmethod
+    def check_if_exists(new_name, new_quantity, new_price, existing_products):
+        for product in existing_products:
+            if new_name == product.name:
+                product.quantity += new_quantity
+                product.price = max(product.price, new_price)
+        return existing_products
+
+    @classmethod
+    def new_product(cls, new_name, new_description, new_price, new_quantity):
+        return cls(new_name, new_description, new_price, new_quantity)
 
 
 class Category():
@@ -21,6 +53,35 @@ class Category():
     def __init__(self, name, description, products):
         self.name = name
         self.description = description
-        self.products = products
+        self.__products = products
         Category.count_categories += 1
         Category.count_products += len(products)
+
+    def add_product(self, new_product):
+        self.__products.append(new_product)
+        self.count_products += 1
+
+    @property
+    def display_products(self):
+        all_products = []
+        for product in self.__products:
+            all_products.append(f'{product.name}, {product.price} руб. Остаток: {product.quantity} шт.')
+        return all_products
+
+
+
+
+# category_1 = Category('name', 'description', [])
+# category_1.add_product(Product('product_name', 'product_description', 14.45, 47))
+# print(category_1.display_products)
+
+product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
+product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
+product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
+
+category1 = Category(
+        "Смартфоны",
+        "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
+        [product1, product2, product3]
+    )
+

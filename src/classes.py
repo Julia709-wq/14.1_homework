@@ -60,7 +60,7 @@ class Category():
         return all_products
 
     @products.setter
-    def products(self, new_product):
+    def add_product(self, new_product):
         self.__products.append(new_product)
         self.count_products += 1
 

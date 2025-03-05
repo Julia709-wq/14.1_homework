@@ -41,6 +41,35 @@ class Product():
         return cls(new_product['name'], new_product['description'], new_product['price'], new_product['quantity'])
 
 
+class Smartphone(Product):
+
+    def __init__(self, name, description, price, quantity, efficiency, model, memory, color):
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+    def __add__(self, other):
+        if type(other) is Smartphone:
+            return self.quantity + other.quantity
+        raise TypeError
+
+
+class LawnGrass(Product):
+
+    def __init__(self, name, description, price, quantity, country, germination_period, color):
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
+
+    def __add__(self, other):
+        if type(other) is LawnGrass:
+            return self.quantity + other.quantity
+        raise TypeError
+
+
 class Category():
     name: str
     description: str
@@ -71,8 +100,12 @@ class Category():
 
     @products.setter
     def add_product(self, new_product):
-        self.__products.append(new_product)
-        self.count_products += 1
+        if isinstance(new_product, Product):
+            self.__products.append(new_product)
+            self.count_products += 1
+        else:
+            raise TypeError
+
 
     @property
     def products_in_list(self):
@@ -81,23 +114,19 @@ class Category():
 
 
 
-# category_1 = Category('name', 'description', [])
-# category_1.add_product(Product('product_name', 'product_description', 14.45, 47))
-# print(category_1.display_products)
 
-product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)
+smartphone1 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 44, 'Ultra', 128, 'black')
 product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
 product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
 
 category1 = Category(
         "Смартфоны",
         "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
-        [product1, product2, product3]
+        [smartphone1, product2, product3]
     )
 
 product4 = Product.new_product({'name': 'Xiaomi Vacuum', 'description': 'робот-пылесос', 'price': 18000, 'quantity': 30})
 
-summa = product1 + product2
-# print(category1)
-# print(product1)
-# print(summa)
+smartphone2 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 44, 'Ultra', 128, 'black')
+
+print(category1.products)

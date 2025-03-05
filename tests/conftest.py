@@ -1,5 +1,5 @@
 import pytest
-from src.classes import Product, Category
+from src.classes import Product, Category, Smartphone, LawnGrass
 
 
 @pytest.fixture(autouse=True)
@@ -43,3 +43,24 @@ def new_product(scope='function'):
     return Product(
         'BigBon', 'Продукт быстрого приготовления', 49.99, 398
     )
+
+@pytest.fixture
+def smartphone1():
+    return Smartphone("Смартфон", "Последний ипхон", 90_000, 395,
+                      "очень хорошая", "16 Pro", "256", "Blue")
+
+@pytest.fixture
+def smartphone2():
+    return Smartphone("Смартфон", "Предпоследний ипхон", 70_000, 175,
+                      "хорошая", "15 Pro", "256", "Pink")
+
+@pytest.fixture
+def lawngrass1():
+    return LawnGrass("Трава для газона", "красивая", 10_000, 314,
+                     "China", "10 days", "ярко-зеленый")
+
+@pytest.fixture
+def lawngrass2():
+    return LawnGrass("Трава для газона", "красивая", 6_000, 514,
+                     "China", "14 days", "бирюзовый")
+

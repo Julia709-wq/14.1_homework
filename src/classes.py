@@ -10,6 +10,12 @@ class Product():
         self.__price = price
         self.quantity = quantity
 
+    def __str__(self):
+        return f'{self.name}, {self.__price} руб. Остаток: {self.quantity} шт.'
+
+    def __add__(self, other):
+        return self.price*self.quantity + other.price*other.quantity
+
     @property
     def price(self):
         return self.__price
@@ -21,8 +27,6 @@ class Product():
             return
         else:
             self.__price = new_price
-
-
 
     @staticmethod
     def check_if_exists(new_name, new_quantity, new_price, existing_products):
@@ -50,6 +54,12 @@ class Category():
         self.__products = products
         Category.count_categories += 1
         Category.count_products += len(products)
+
+    def __str__(self):
+        counter = 0
+        for i in self.__products:
+            counter += i.quantity
+        return f'{self.name}, количество продуктов: {counter} шт.'
 
 
     @property
@@ -87,4 +97,7 @@ category1 = Category(
 
 product4 = Product.new_product({'name': 'Xiaomi Vacuum', 'description': 'робот-пылесос', 'price': 18000, 'quantity': 30})
 
-print(category1.products)
+summa = product1 + product2
+# print(category1)
+# print(product1)
+# print(summa)

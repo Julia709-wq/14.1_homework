@@ -54,5 +54,20 @@ def test_products_list_property(first_category):
 # тест для проверки добавления нового продукта в список
 def test_products_list_setter(first_category, new_product):
     assert len(first_category.products_in_list) == 2
-    first_category.products = new_product
+    first_category.add_product = new_product
     assert len(first_category.products_in_list) == 3
+
+# тест для магического метода __str__ класса Product
+def test_str_product(first_product):
+    expected_output = 'KitKat, 59.99 руб. Остаток: 140 шт.'
+    assert str(first_product) == expected_output
+
+# тест для магического метода __str__ класса Category
+def test_str_category(first_category):
+    expected_output = 'Напитки, количество продуктов: 587 шт.'
+    assert str(first_category) == expected_output
+
+# тест для магического метода __add__ класса Product
+def test_add_product(first_product, second_product):
+    expected_result = 59.99*140 + 89.99*350
+    assert first_product.__add__(second_product) == expected_result

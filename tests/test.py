@@ -24,11 +24,11 @@ def test_categories_init(first_category, second_category):
 
 
 def test_count_categories(first_category, second_category):
-    assert Category.count_categories == 2
+    assert Category.category_count == 2
 
 
 def test_count_products(first_category, second_category):
-    assert Category.count_products == 3
+    assert Category.product_count == 3
 
 
 # тест класс-метода new_product

@@ -46,7 +46,6 @@ class Product(BaseProduct, PrintMixin):
     def new_product(cls, new_product):
         return cls(new_product['name'], new_product['description'], new_product['price'], new_product['quantity'])
 
-    @abstractmethod
     def sold(self):
         pass
 
@@ -90,15 +89,15 @@ class Category():
     name: str
     description: str
     products: list
-    count_categories = 0
-    count_products = 0
+    category_count = 0
+    product_count = 0
 
     def __init__(self, name, description, products):
         self.name = name
         self.description = description
         self.__products = products
-        Category.count_categories += 1
-        Category.count_products += len(products)
+        Category.category_count += 1
+        Category.product_count += len(products)
 
     def __str__(self):
         counter = 0
@@ -118,7 +117,7 @@ class Category():
     def add_product(self, new_product):
         if isinstance(new_product, Product):
             self.__products.append(new_product)
-            self.count_products += 1
+            self.product_count += 1
         else:
             raise TypeError
 

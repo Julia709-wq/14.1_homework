@@ -1,4 +1,9 @@
-class Product():
+from mypy.semanal_shared import abstractmethod
+
+from src.base_product import BaseProduct
+from src.print_mixin import PrintMixin
+
+class Product(BaseProduct, PrintMixin):
     name: str
     description: str
     price: float
@@ -9,6 +14,7 @@ class Product():
         self.description = description
         self.__price = price
         self.quantity = quantity
+        super().__init__()
 
     def __str__(self):
         return f'{self.name}, {self.__price} руб. Остаток: {self.quantity} шт.'
@@ -40,6 +46,9 @@ class Product():
     def new_product(cls, new_product):
         return cls(new_product['name'], new_product['description'], new_product['price'], new_product['quantity'])
 
+    @abstractmethod
+    def sold(self):
+        pass
 
 class Smartphone(Product):
 
@@ -55,6 +64,10 @@ class Smartphone(Product):
             return self.quantity + other.quantity
         raise TypeError
 
+    def sold(self):
+        self.quantity = self.quantity - 1
+        print(f"The product {self.name} was sold.")
+
 
 class LawnGrass(Product):
 
@@ -69,6 +82,9 @@ class LawnGrass(Product):
             return self.quantity + other.quantity
         raise TypeError
 
+    def sold(self):
+        self.quantity = self.quantity - 1
+        print(f"The product {self.name} was sold.")
 
 class Category():
     name: str
@@ -112,21 +128,12 @@ class Category():
         return self.__products
 
 
-
-
-
 smartphone1 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 44, 'Ultra', 128, 'black')
-product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)
-product3 = Product("Xiaomi Redmi Note 11", "1024GB, Синий", 31000.0, 14)
 
 category1 = Category(
         "Смартфоны",
         "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
-        [smartphone1, product2, product3]
+        [smartphone1]
     )
 
-product4 = Product.new_product({'name': 'Xiaomi Vacuum', 'description': 'робот-пылесос', 'price': 18000, 'quantity': 30})
-
 smartphone2 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 44, 'Ultra', 128, 'black')
-
-print(category1.products)

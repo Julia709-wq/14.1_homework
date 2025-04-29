@@ -26,8 +26,8 @@ def second_product():
 def first_category(scope='function'):
     return Category(
         'Напитки', 'Все напитки', [
-            Product('Fanta', 'Газированный напиток', 89.99, 350),
-            Product('Saint Spring', 'Негазированная вода', 39.99, 237)]
+            Product('Fanta', 'Газированный напиток', 90, 350),
+            Product('Saint Spring', 'Негазированная вода', 30, 237)]
     )
 
 
@@ -63,4 +63,11 @@ def lawngrass1():
 def lawngrass2():
     return LawnGrass("Трава для газона", "красивая", 6_000, 514,
                      "China", "14 days", "бирюзовый")
+
+@pytest.fixture
+def category_without_products():
+    return Category('Напитки',
+                    'Все напитки',
+                    [])
+
 

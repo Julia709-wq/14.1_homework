@@ -1,7 +1,7 @@
-from mypy.semanal_shared import abstractmethod
-
 from src.base_product import BaseProduct
+from src.exceptions import AbsentPrice
 from src.print_mixin import PrintMixin
+
 
 class Product(BaseProduct, PrintMixin):
     name: str
@@ -13,7 +13,10 @@ class Product(BaseProduct, PrintMixin):
         self.name = name
         self.description = description
         self.__price = price
-        self.quantity = quantity
+        if quantity > 0:
+            self.quantity = quantity
+        else:
+            raise ValueError("Нельзя добавить товар с нулевым количеством.")
         super().__init__()
 
     def __str__(self):
@@ -85,7 +88,7 @@ class LawnGrass(Product):
         self.quantity = self.quantity - 1
         print(f"The product {self.name} was sold.")
 
-class Category():
+class Category:
     name: str
     description: str
     products: list
@@ -114,25 +117,44 @@ class Category():
         return all_products
 
     @products.setter
-    def add_product(self, new_product):
+    def products(self, new_product):
         if isinstance(new_product, Product):
-            self.__products.append(new_product)
-            self.product_count += 1
+            try:
+                if new_product.quantity == 0:
+                    raise AbsentPrice("Нельзя добавить товар с нулевым количеством.")
+            except AbsentPrice as e:
+                print(str(e))
+            else:
+                self.__products.append(new_product)
+                Category.product_count += 1
+                print("Товар успешно добавлен.")
         else:
             raise TypeError
-
 
     @property
     def products_in_list(self):
         return self.__products
 
+    def avg_price(self):
+        try:
+            return sum([product.price for product in self.__products]) / len(self.__products)
+        except ZeroDivisionError:
+            return 0
 
-smartphone1 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 44, 'Ultra', 128, 'black')
+
+smartphone1 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180_000.0, 5, 44, 'Ultra', 128, 'black')
+smartphone2 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 60_000.0, 7, 44, 'Ultra', 128, 'black')
 
 category1 = Category(
         "Смартфоны",
         "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
-        [smartphone1]
+        [smartphone1, smartphone2]
     )
+# print(category1.avg_price())
 
-smartphone2 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5, 44, 'Ultra', 128, 'black')
+category2 = Category(
+        "Смартфоны",
+        "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
+        []
+    )
+print(category2.avg_price())

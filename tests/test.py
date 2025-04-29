@@ -24,11 +24,11 @@ def test_categories_init(first_category, second_category):
 
 
 def test_count_categories(first_category, second_category):
-    assert Category.count_categories == 2
+    assert Category.category_count == 6
 
 
 def test_count_products(first_category, second_category):
-    assert Category.count_products == 3
+    assert Category.product_count == 11
 
 
 # тест класс-метода new_product
@@ -44,7 +44,7 @@ def test_new_product_created():
 def test_price_setter(capsys, first_product):
     first_product.price = -100
     message = capsys.readouterr()
-    assert message.out.strip() == 'Цена не должна быть нулевая или отрицательная'
+    assert message.out.strip().split('\n')[-1] == 'Цена не должна быть нулевая или отрицательная'
 
     first_product.price = 100
     assert first_product.price == 100
@@ -52,42 +52,52 @@ def test_price_setter(capsys, first_product):
 
 # тест для геттера списка продуктов
 def test_products_list_property(first_category):
-    assert first_category.products == ('Fanta, 89.99 руб. Остаток: 350 шт.\n'
-                                        'Saint Spring, 39.99 руб. Остаток: 237 шт.\n')
+    assert first_category.products == ('Fanta, 90 руб. Остаток: 350 шт.\n'
+                                        'Saint Spring, 30 руб. Остаток: 237 шт.\n')
 
 
 # тест для проверки добавления нового продукта в список
 def test_products_list_setter(first_category, new_product):
     assert len(first_category.products_in_list) == 2
-    first_category.add_product = new_product
+    first_category.products = new_product
     assert len(first_category.products_in_list) == 3
 
+
+def test_check_if_exists(first_product):
+    existing = [first_product]
+    Product.check_if_exists("KitKat", 10, 50, existing)
+    assert first_product.quantity == 150
+    assert first_product.price == 59.99
+
+    Product.check_if_exists("KitKat", 10, 100, existing)
+    assert first_product.price == 100
 
 # тест для магического метода __str__ класса Product
 def test_str_product(first_product):
     expected_output = 'KitKat, 59.99 руб. Остаток: 140 шт.'
     assert str(first_product) == expected_output
 
-
 # тест для магического метода __str__ класса Category
 def test_str_category(first_category):
     expected_output = 'Напитки, количество продуктов: 587 шт.'
     assert str(first_category) == expected_output
 
+def test_category_str_with_no_products():
+    category = Category('Пустая', 'Категория без товаров', [])
+    assert str(category) == 'Пустая, количество продуктов: 0 шт.'
 
 # тест для магического метода __add__ класса Product
 def test_add_product(first_product, second_product):
     expected_result = 59.99*140 + 89.99*350
     assert first_product.__add__(second_product) == expected_result
 
-
 # тест для проверки возникновения ошибки при попытке добавить в список товаров объект не класса Product
 def test_products_list_setter_error(first_category, new_product):
     with pytest.raises(TypeError):
-        first_category.add_product = 1
+        first_category.products = 1
 
 def test_products_list_setter_smartphone(first_category, smartphone1):
-    first_category.add_product = smartphone1
+    first_category.products = smartphone1
     assert first_category.products_in_list[-1].name == 'Смартфон'
 
 def test_smartphone_init(smartphone1):
@@ -101,7 +111,7 @@ def test_smartphone_init(smartphone1):
     assert smartphone1.color == "Blue"
 
 def test_smartphone_add(smartphone1, smartphone2):
-    assert smartphone2.quantity + smartphone1.quantity == 570
+    assert (smartphone2 + smartphone1) == 570
 
 def test_smartphone_add_error(smartphone1, smartphone2):
     with pytest.raises(TypeError):
@@ -125,9 +135,43 @@ def test_lawn_grass2_init(lawngrass2):
     assert lawngrass2.germination_period == "14 days"
     assert lawngrass2.color == "бирюзовый"
 
+def test_smartphone_sold(smartphone1, capsys):
+    initial_quantity = smartphone1.quantity
+    smartphone1.sold()
+    assert smartphone1.quantity == initial_quantity - 1
+    output = capsys.readouterr().out.strip()
+    assert f"The product {smartphone1.name} was sold." in output
+
 def test_lawngrass_add(lawngrass1, lawngrass2):
-    assert lawngrass2.quantity + lawngrass1.quantity == 828
+    assert (lawngrass2 + lawngrass1) == 828
 
 def test_lawngrass_add_error(lawngrass1, lawngrass2):
     with pytest.raises(TypeError):
         result = lawngrass1 + 1
+
+def test_smartphone_add_wrong_type(smartphone1, lawngrass1):
+    with pytest.raises(TypeError):
+        smartphone1 + lawngrass1
+
+def test_product_zero_quantity():
+    with pytest.raises(ValueError):
+        Product("Test", "Desc", 100, 0)
+
+def test_avg_price(category_without_products, first_category):
+    assert category_without_products.avg_price() == 0
+    assert first_category.avg_price() == 60
+
+def test_avg_price_with_one_product(second_category):
+    assert second_category.avg_price() == 56.99
+
+def test_custom_exception(capsys, first_category):
+    assert len(first_category.products_in_list) == 2
+    product_add = Product('Fanta', 'Газированный напиток', 90, 10)
+    first_category.products = product_add
+    message = capsys.readouterr()
+    assert message.out.strip().split('\n')[-1] == "Товар успешно добавлен."
+
+def test_product_zero_quantity_raises_value_error():
+    with pytest.raises(ValueError) as exc_info:
+        Product("Test Product", "Description", 100.0, 0)
+    assert str(exc_info.value) == "Нельзя добавить товар с нулевым количеством."

@@ -116,6 +116,7 @@ class Category:
             all_products += f'{product.name}, {product.price} руб. Остаток: {product.quantity} шт.\n'
         return all_products
 
+
     @products.setter
     def products(self, new_product):
         if isinstance(new_product, Product):
@@ -157,4 +158,4 @@ category2 = Category(
         "Смартфоны, как средство не только коммуникации, но и получения дополнительных функций для удобства жизни",
         []
     )
-print(category2.avg_price())
+# print(category2.avg_price())

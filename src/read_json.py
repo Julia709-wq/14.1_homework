@@ -20,10 +20,9 @@ def create_objects_from_json(data):
         products.append(Category(**product))
     return products
 
-
-if __name__ == '__main__':
-    raw_data = read_json('../data/products.json')
-    categories_data = create_objects_from_json(raw_data)
-    print(categories_data[0].name)
-    print(categories_data[0].description)
-    print(categories_data[0].products)
+# if __name__ == '__main__':
+#     raw_data = read_json('../data/products.json')
+#     categories_data = create_objects_from_json(raw_data)
+#     print(categories_data[0].name)
+#     print(categories_data[0].description)
+#     print(categories_data[0].products)
